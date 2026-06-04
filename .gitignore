@@ -486,3 +486,9 @@ $RECYCLE.BIN/
 
 # Librerías frontend (se reinstalan con npm/libman)
 wwwroot/lib/
+
+
+# Base de datos local
+Data/kino.db
+Data/kino.db-wal
+Data/kino.db-shm
