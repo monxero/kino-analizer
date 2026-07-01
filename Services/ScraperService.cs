@@ -50,7 +50,7 @@ public class ScraperService
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
-        var tablaKino = doc.DocumentNode.SelectSingleNode("//table[@class='kn-d']");
+        var tablaKino = doc.DocumentNode.SelectSingleNode("//div[contains(@class,'kino')]//table[contains(@class,'kn-d')]");
         if (tablaKino == null) return null;
 
         var bolitas = tablaKino.SelectNodes(".//span[@class='bola']");
@@ -118,7 +118,7 @@ public class ScraperService
                 var sorteo = new Sorteo
                 {
                     NumeroSorteo = datos.Value.numero,
-                    FechaSorteo = DateTime.Parse(datos.Value.fecha),
+                    FechaSorteo = DateTime.TryParse(datos.Value.fecha, out var fecha) ? fecha : DateTime.MinValue,
                     RastreadoEn = DateTime.Now,
                     UrlFuente = link,
                     Numeros = datos.Value.numeros.Select((n, i) => new NumeroSorteado
