@@ -492,3 +492,7 @@ wwwroot/lib/
 Data/kino.db
 Data/kino.db-wal
 Data/kino.db-shm
+
+# Claves SSH
+*.pub
+ghp_*
