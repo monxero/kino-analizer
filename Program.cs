@@ -1,12 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using KinoAnalyzer.Data;
+using KinoAnalyzer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Razor Pages + Blazor
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+// HttpClient y Scraper
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<ScraperService>();
 
 // Base de datos
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
