@@ -1,0 +1,91 @@
+@page
+@model KinoAnalyzer.Pages.Estadisticas.EstadisticasModel
+@{
+    ViewData["Title"] = "Estadísticas";
+}
+
+<h1>Estadísticas del Kino</h1>
+<p class="text-muted">Basado en @Model.TotalSorteos sorteos históricos</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>🔥 Números más frecuentes</h4>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Veces</th>
+                    <th>Frecuencia</th>
+                    <th>vs Esperado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.Frecuencias.Take(14))
+                {
+                    <tr>
+                        <td><span class="badge bg-danger">@f.Numero</span></td>
+                        <td>@f.Veces</td>
+                        <td>@f.Frecuencia%</td>
+                        <td class="@(f.Diferencia > 0 ? "text-success" : "text-danger")">
+                            @(f.Diferencia > 0 ? "+" : "")@f.Diferencia%
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <h4>🧊 Números más atrasados</h4>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Último sorteo</th>
+                    <th>Sorteos sin salir</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model.Atrasados.Take(14))
+                {
+                    <tr>
+                        <td><span class="badge bg-info">@a.Numero</span></td>
+                        <td>#@a.UltimoSorteo</td>
+                        <td>
+                            <span class="@(a.SorteosSinSalir > 20 ? "text-danger fw-bold" : "")">
+                                @a.SorteosSinSalir
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <h4>❄️ Números menos frecuentes</h4>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Veces</th>
+                    <th>Frecuencia</th>
+                    <th>vs Esperado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.Frecuencias.TakeLast(14))
+                {
+                    <tr>
+                        <td><span class="badge bg-secondary">@f.Numero</span></td>
+                        <td>@f.Veces</td>
+                        <td>@f.Frecuencia%</td>
+                        <td class="text-danger">@f.Diferencia%</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

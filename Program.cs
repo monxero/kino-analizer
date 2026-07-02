@@ -12,6 +12,7 @@ builder.Services.AddServerSideBlazor();
 // HttpClient y Scraper
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ScraperService>();
+builder.Services.AddScoped<KinoStatsService>();
 
 // Base de datos
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
