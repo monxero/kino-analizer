@@ -60,8 +60,8 @@ public class ScraperService
             .Select(b => int.Parse(b.InnerText.Trim()))
             .ToList();
 
-        var fechaTag = doc.DocumentNode.SelectSingleNode("//time[@class='entry-date']");
-        var fecha = fechaTag?.InnerText.Trim() ?? "sin fecha";
+        var fechaTag = doc.DocumentNode.SelectSingleNode("//time[contains(@class,'entry-date')]");
+        var fecha = fechaTag?.GetAttributeValue("datetime", "") ?? "sin fecha";
 
         var titulo = doc.DocumentNode.SelectSingleNode("//h1[@class='entry-title']");
         var numeroSorteo = 0;

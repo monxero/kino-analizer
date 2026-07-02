@@ -1,10 +1,61 @@
 ﻿@page
-@model IndexModel
+@model KinoAnalyzer.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Dashboard - KinoAnalyzer";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Dashboard</h1>
+<p class="text-muted">Últimos sorteos del Kino de Chile</p>
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="card-title text-primary">@Model.TotalSorteos</h2>
+                <p class="card-text">Sorteos en la base de datos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="card-title text-success">@Model.UltimoSorteo</h2>
+                <p class="card-text">Último sorteo registrado</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="card-title text-info">@Model.PrimerSorteo</h2>
+                <p class="card-text">Primer sorteo registrado</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<h4>Últimos 10 sorteos</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Sorteo</th>
+            <th>Fecha</th>
+            <th>Números</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sorteo in Model.UltimosSorteos)
+        {
+            <tr>
+                <td><strong>#@sorteo.NumeroSorteo</strong></td>
+                <td>@sorteo.FechaSorteo.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @foreach (var numero in sorteo.Numeros.OrderBy(n => n.Numero))
+                    {
+                        <span class="badge bg-primary me-1">@numero.Numero</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

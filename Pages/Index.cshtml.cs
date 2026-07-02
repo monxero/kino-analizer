@@ -1,19 +1,34 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using KinoAnalyzer.Data;
+using KinoAnalyzer.Models;
 
-namespace kino_analyzer.Pages;
+namespace KinoAnalyzer.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    private readonly AppDbContext _db;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public int TotalSorteos { get; set; }
+    public int UltimoSorteo { get; set; }
+    public int PrimerSorteo { get; set; }
+    public List<Sorteo> UltimosSorteos { get; set; } = new();
+
+    public IndexModel(AppDbContext db)
     {
-        _logger = logger;
+        _db = db;
     }
 
-    public void OnGet()
+    public async Task OnGetAsync()
     {
+        TotalSorteos = await _db.Sorteos.CountAsync();
+        UltimoSorteo = await _db.Sorteos.MaxAsync(s => s.NumeroSorteo);
+        PrimerSorteo = await _db.Sorteos.MinAsync(s => s.NumeroSorteo);
 
+        UltimosSorteos = await _db.Sorteos
+            .Include(s => s.Numeros)
+            .OrderByDescending(s => s.NumeroSorteo)
+            .Take(10)
+            .ToListAsync();
     }
 }
