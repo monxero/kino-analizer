@@ -1,0 +1,76 @@
+@page
+@model KinoAnalyzer.Pages.MisCombinaciones.MisCombinacionesModel
+@{
+    ViewData["Title"] = "Mis Combinaciones";
+}
+
+<h1>Mis Combinaciones</h1>
+<p class="text-muted">Guardá tus números favoritos para jugar</p>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Nueva combinación</div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="Nombre" class="form-control" placeholder="Ej: Mi combinación suertuda" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Números (elige 14, separados por coma)</label>
+                        <input type="text" name="Numeros" class="form-control" placeholder="1,2,3,4,5,6,7,8,9,10,11,12,13,14" required />
+                        <div class="form-text">Elige 14 números del 1 al 25</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notas (opcional)</label>
+                        <textarea name="Notas" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar combinación</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Combinaciones.Any())
+{
+    <h4>Tus combinaciones guardadas</h4>
+    @foreach (var combo in Model.Combinaciones)
+    {
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <span>
+                    @if (combo.EsFavorita)
+                    {
+                        <span>⭐</span>
+                    }
+                    <strong>@combo.Nombre</strong>
+                </span>
+                <small class="text-muted">@combo.CreadoEn.ToString("dd/MM/yyyy")</small>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    @foreach (var n in combo.Numeros.OrderBy(n => n.Numero))
+                    {
+                        <span class="badge bg-primary me-1 fs-6">@n.Numero</span>
+                    }
+                </div>
+                @if (!string.IsNullOrEmpty(combo.Notas))
+                {
+                    <p class="text-muted mb-0"><small>@combo.Notas</small></p>
+                }
+                <form method="post" asp-page-handler="Eliminar" class="mt-2">
+                    <input type="hidden" name="id" value="@combo.Id" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info">
+        No tienes combinaciones guardadas todavía.
+    </div>
+}
