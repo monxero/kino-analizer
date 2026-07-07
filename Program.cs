@@ -14,6 +14,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<ScraperService>();
 builder.Services.AddScoped<KinoStatsService>();
 
+// 
+builder.Services.AddScoped<AgentService>();
+
 // Base de datos
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>

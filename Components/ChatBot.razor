@@ -1,0 +1,74 @@
+@using Microsoft.AspNetCore.Components.Web
+@using KinoAnalyzer.Services
+@inject AgentService AgentSvc
+
+<div class="card">
+    <div class="card-body" style="height: 400px; overflow-y: auto;" id="chatBox">
+        @foreach (var mensaje in _mensajes)
+        {
+            <div class="mb-3 @(mensaje.Role == "user" ? "text-end" : "")">
+                <span class="badge @(mensaje.Role == "user" ? "bg-primary" : "bg-secondary") mb-1">
+                    @(mensaje.Role == "user" ? "Vos" : "Agente")
+                </span>
+                <div class="p-2 rounded @(mensaje.Role == "user" ? "bg-light" : "bg-white border")">
+                    @mensaje.Content
+                </div>
+            </div>
+        }
+        @if (_cargando)
+        {
+            <div class="text-muted">
+                <em>El agente está pensando...</em>
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Preguntame sobre el Kino..."
+                   @bind="_preguntaActual" @onkeypress="HandleKeyPress" disabled="@_cargando" />
+            <button class="btn btn-primary" @onclick="Enviar" disabled="@_cargando">
+                Enviar
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<MensajeChat> _mensajes = new();
+    private string _preguntaActual = string.Empty;
+    private bool _cargando = false;
+
+    private async Task Enviar()
+    {
+        if (string.IsNullOrWhiteSpace(_preguntaActual) || _cargando)
+            return;
+
+        var pregunta = _preguntaActual;
+        _preguntaActual = string.Empty;
+
+        _mensajes.Add(new MensajeChat { Role = "user", Content = pregunta });
+        _cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            var respuesta = await AgentSvc.Preguntar(pregunta, _mensajes);
+            _mensajes.Add(new MensajeChat { Role = "assistant", Content = respuesta });
+        }
+        catch (Exception ex)
+        {
+            _mensajes.Add(new MensajeChat { Role = "assistant", Content = $"Error: {ex.Message}" });
+        }
+        finally
+        {
+            _cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await Enviar();
+    }
+}

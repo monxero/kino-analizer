@@ -25,6 +25,17 @@ public class ParNumeros
     public int Veces { get; set; }
 }
 
+
+public class DistribucionRango
+{
+    public string Rango { get; set; } = string.Empty;
+    public int Min { get; set; }
+    public int Max { get; set; }
+    public double Promedio { get; set; }
+    public int TotalApariciones { get; set; }
+}
+
+
 public class KinoStatsService
 {
     private readonly AppDbContext _db;
@@ -75,5 +86,81 @@ public class KinoStatsService
             .ToListAsync();
 
         return atrasados;
+    }
+
+    public async Task<List<ParNumeros>> ObtenerPares()
+    {
+        var pares = await _db.NumerosSorteados
+            .Join(_db.NumerosSorteados,
+                a => a.SorteoId,
+                b => b.SorteoId,
+                (a, b) => new { a, b })
+            .Where(x => x.a.Numero < x.b.Numero)
+            .GroupBy(x => new { Num1 = x.a.Numero, Num2 = x.b.Numero })
+            .Select(g => new ParNumeros
+            {
+                Num1 = g.Key.Num1,
+                Num2 = g.Key.Num2,
+                Veces = g.Count()
+            })
+            .OrderByDescending(p => p.Veces)
+            .Take(20)
+            .ToListAsync();
+
+        return pares;
+    }
+
+    public async Task<List<DistribucionRango>> ObtenerDistribucionRangos()
+    {
+        var total = await ObtenerTotalSorteos();
+        var numeros = await _db.NumerosSorteados.ToListAsync();
+
+        var rangos = new List<DistribucionRango>
+        {
+            new() {
+                Rango = "Bajos (1-8)", Min = 1, Max = 8,
+                TotalApariciones = numeros.Count(n => n.Numero >= 1 && n.Numero <= 8),
+                Promedio = Math.Round((double)numeros.Count(n => n.Numero >= 1 && n.Numero <= 8) / total, 1)
+            },
+            new() {
+                Rango = "Medios (9-17)", Min = 9, Max = 17,
+                TotalApariciones = numeros.Count(n => n.Numero >= 9 && n.Numero <= 17),
+                Promedio = Math.Round((double)numeros.Count(n => n.Numero >= 9 && n.Numero <= 17) / total, 1)
+            },
+            new() {
+                Rango = "Altos (18-25)", Min = 18, Max = 25,
+                TotalApariciones = numeros.Count(n => n.Numero >= 18 && n.Numero <= 25),
+                Promedio = Math.Round((double)numeros.Count(n => n.Numero >= 18 && n.Numero <= 25) / total, 1)
+            }
+        };
+
+        return rangos;
+    }
+
+    public async Task<object> AnalizarCombinacion(List<int> numeros)
+    {
+        var sorteos = await _db.Sorteos
+            .Include(s => s.Numeros)
+            .ToListAsync();
+
+        var resultados = sorteos.Select(s => {
+            var coincidencias = s.Numeros.Count(n => numeros.Contains(n.Numero));
+            return new {
+                NumeroSorteo = s.NumeroSorteo,
+                Fecha = s.FechaSorteo.ToString("dd/MM/yyyy"),
+                Coincidencias = coincidencias
+            };
+        })
+        .OrderByDescending(r => r.Coincidencias)
+        .Take(10)
+        .ToList();
+
+        var promedio = sorteos.Average(s =>
+            s.Numeros.Count(n => numeros.Contains(n.Numero)));
+
+        return new {
+            PromedioCoincidencias = Math.Round(promedio, 1),
+            MejoresSorteos = resultados
+        };
     }
 }

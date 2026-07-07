@@ -1,0 +1,13 @@
+@page
+@{
+    ViewData["Title"] = "Chat con el Agente";
+}
+
+<h1>🤖 Agente KinoAnalyzer</h1>
+<p class="text-muted">Preguntame sobre estadísticas del Kino</p>
+
+<component type="typeof(KinoAnalyzer.Components.ChatBot)" render-mode="ServerPrerendered" />
+
+@section Scripts {
+    <script src="_framework/blazor.server.js"></script>
+}
