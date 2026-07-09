@@ -496,3 +496,6 @@ Data/kino.db-shm
 # Claves SSH
 *.pub
 ghp_*
+
+# Entorno virtual Python
+venv/
