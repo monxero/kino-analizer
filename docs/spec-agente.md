@@ -120,7 +120,24 @@ Cualquier idea nueva que surja durante el desarrollo se compara primero contra e
 
 ---
 
-## 10. Historial de decisiones
+## 10. Reprioridad MVP (oferta laboral real encontrada)
+
+Se encontró una oferta laboral real que pide exactamente: .NET, Blazor, XML, DevExpress, Git, SQL, consumo de APIs. Se reordena el trabajo restante para cubrir esos requisitos lo antes posible, sin abandonar lo ya definido — solo se reordena la secuencia.
+
+**Fase A (en curso) — Circuito mínimo Python↔.NET, no las 11 funciones:**
+`obtener_ultimos_sorteos` (lista), `frecuencia_numeros`, `buscar_numero_en_sorteos`. Suficiente para demostrar el patrón completo de consumo de API y function calling con más de una herramienta.
+
+**Fase B — Requisitos explícitos de la oferta, hoy en cero:**
+DevExpress (grilla en Dashboard), exportar estadísticas en XML.
+
+**Fase C — Backlog opcional, no comprometido:**
+Las 8 funciones restantes de `analyzer.py`, la función de escritura con confirmación (`guardar_combinacion_favorita`), página de perfil de usuario. Se retoma solo si sobra tiempo antes de postular — no es requisito de la oferta real encontrada (ver más abajo), que no menciona IA, agentes ni Python en ningún punto.
+
+**Oferta real usada como referencia (2026-07-13):** Desarrollador Junior de Sistemas — requiere: lenguajes de programación, interfaces, modelamiento de datos, consumo de APIs/servicios, SQL, JSON y XML, Visual Studio .NET, Blazor, DevExpress, Git, seguridad de la información básica, usabilidad/UX básica. No menciona IA/agentes/Python — el agente es un diferenciador propio del candidato, no un requisito.
+
+## 11. Historial de decisiones
 
 - **2026-07-09:** definición inicial cerrada. Arquitectura microservicio .NET↔Python, 11 funciones de `analyzer.py` definidas, seguridad de escritura con confirmación (Opción C), autenticación entre servicios diferida a propósito.
-- **2026-07-12:** agregada sección de riesgos técnicos conocidos (concurrencia SQLite, bloqueo async en FastAPI). Confirmada versión real de `google-genai` instalada (2.10.0). Se establece como práctica fija: antes de cerrar cualquier definición nueva, se investigan activamente riesgos técnicos del stack elegido, en vez de esperar a que aparezcan a mitad de desarrollo.
+- **2026-07-12:** agregada sección de riesgos técnicos conocidos (concurrencia SQLite, bloqueo async en FastAPI). Confirmada versión real de `google-genai` instalada (2.10.0). Se establece como práctica fija: antes de cerrar cualquier definición nueva, se investigan activamente riesgos técnicos del stack elegido, en vez de esperar a que aparezcan a mitad de desarrollo. `obtener_ultimos_sorteos` implementada y probada.
+- **2026-07-13:** se encuentra oferta laboral real con los requisitos exactos del proyecto. Se reprioriza el trabajo restante en Fases A/B/C (ver sección 10) para cubrir primero los requisitos explícitos de la oferta, dejando el resto de las funciones del agente como perfeccionamiento posterior.
+- **2026-07-13:** Fase A completada — circuito Python↔.NET funcionando de punta a punta (`analyzer.py` con 3 funciones, `agent.py` con function calling, `main.py` con `/chat`, `AgentService.cs` consumiendo el microservicio, `ChatBot.razor` con historial corregido). Probado desde el navegador con preguntas reales. Commit `b80e2bb`. Siguiente paso: Fase B (DevExpress, XML).
