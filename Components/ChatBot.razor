@@ -46,13 +46,15 @@
         var pregunta = _preguntaActual;
         _preguntaActual = string.Empty;
 
+        var historialPrevio = new List<MensajeChat>(_mensajes); // copia del historial ANTES de agregar la pregunta nueva
+
         _mensajes.Add(new MensajeChat { Role = "user", Content = pregunta });
         _cargando = true;
         StateHasChanged();
 
         try
         {
-            var respuesta = await AgentSvc.Preguntar(pregunta, _mensajes);
+            var respuesta = await AgentSvc.Preguntar(pregunta, historialPrevio);
             _mensajes.Add(new MensajeChat { Role = "assistant", Content = respuesta });
         }
         catch (Exception ex)

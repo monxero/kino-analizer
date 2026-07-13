@@ -102,7 +102,14 @@ El Kino es aleatorio; los sorteos son eventos independientes. Ningún análisis 
 
 ---
 
-## 8. Regla de uso de este documento
+## 8. Riesgos técnicos conocidos (identificados antes de programar)
+
+| Riesgo | Mitigación decidida |
+|---|---|
+| Concurrencia de SQLite entre dos procesos (.NET vía EF Core y Python vía `sqlite3`) accediendo al mismo `kino.db` | A confirmar si EF Core ya usa modo WAL (probable, ya que `.gitignore` ignora `kino.db-wal`/`kino.db-shm`). Si no, activarlo — reduce bloqueos entre procesos. |
+| Una consulta SQLite lenta dentro de una ruta `async def` de FastAPI podría congelar todo el servidor Python, no solo esa consulta | Las rutas de `main.py` se declaran como `def` normal, no `async def`. FastAPI las corre automáticamente en un hilo aparte, evitando el bloqueo, sin necesidad de manejar `async`/`await`. |
+
+## 9. Regla de uso de este documento
 
 Cualquier idea nueva que surja durante el desarrollo se compara primero contra este documento:
 
@@ -113,6 +120,7 @@ Cualquier idea nueva que surja durante el desarrollo se compara primero contra e
 
 ---
 
-## 9. Historial de decisiones
+## 10. Historial de decisiones
 
 - **2026-07-09:** definición inicial cerrada. Arquitectura microservicio .NET↔Python, 11 funciones de `analyzer.py` definidas, seguridad de escritura con confirmación (Opción C), autenticación entre servicios diferida a propósito.
+- **2026-07-12:** agregada sección de riesgos técnicos conocidos (concurrencia SQLite, bloqueo async en FastAPI). Confirmada versión real de `google-genai` instalada (2.10.0). Se establece como práctica fija: antes de cerrar cualquier definición nueva, se investigan activamente riesgos técnicos del stack elegido, en vez de esperar a que aparezcan a mitad de desarrollo.

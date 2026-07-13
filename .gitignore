@@ -499,3 +499,4 @@ ghp_*
 
 # Entorno virtual Python
 venv/
+.env
