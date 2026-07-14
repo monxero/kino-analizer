@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using KinoAnalyzer.Data;
+using KinoAnalyzer.Models;
 
 namespace KinoAnalyzer.Services;
 
@@ -163,4 +164,14 @@ public class KinoStatsService
             MejoresSorteos = resultados
         };
     }
+
+
+    public async Task<List<Sorteo>> ObtenerTodosLosSorteos()
+    {
+        return await _db.Sorteos
+            .Include(s => s.Numeros)
+            .OrderByDescending(s => s.NumeroSorteo)
+            .ToListAsync();
+    }
+
 }

@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddDevExpressBlazor();
+
 // HttpClient y Scraper
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ScraperService>();

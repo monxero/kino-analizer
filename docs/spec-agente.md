@@ -128,7 +128,7 @@ Se encontró una oferta laboral real que pide exactamente: .NET, Blazor, XML, De
 `obtener_ultimos_sorteos` (lista), `frecuencia_numeros`, `buscar_numero_en_sorteos`. Suficiente para demostrar el patrón completo de consumo de API y function calling con más de una herramienta.
 
 **Fase B — Requisitos explícitos de la oferta, hoy en cero:**
-DevExpress (grilla en Dashboard), exportar estadísticas en XML.
+DevExpress (grilla en Dashboard) — completado funcionalmente (datos reales, filtro, paginación funcionando). Pendiente de pulido: conflicto visual CSS entre Bootstrap y el tema Fluent de DevExpress (Shadow DOM), afecta el popup del calendario del filtro. Causa identificada, no bloqueante, diferido por bajo retorno vs. tiempo de resolución. Exportar estadísticas en XML.
 
 **Fase C — Backlog opcional, no comprometido:**
 Las 8 funciones restantes de `analyzer.py`, la función de escritura con confirmación (`guardar_combinacion_favorita`), página de perfil de usuario. Se retoma solo si sobra tiempo antes de postular — no es requisito de la oferta real encontrada (ver más abajo), que no menciona IA, agentes ni Python en ningún punto.

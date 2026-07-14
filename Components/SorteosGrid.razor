@@ -1,0 +1,38 @@
+@using DevExpress.Blazor
+@using KinoAnalyzer.Models
+@using KinoAnalyzer.Services
+@inject KinoStatsService Stats
+
+@if (sorteos == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <DxGrid Data="@sorteos" PageSize="15" ShowFilterRow="true">
+        <Columns>
+            <DxGridDataColumn FieldName="NumeroSorteo" Caption="Sorteo" Width="100px" />
+            <DxGridDataColumn FieldName="FechaSorteo" Caption="Fecha" Width="140px" DisplayFormat="dd/MM/yyyy" />
+            <DxGridDataColumn Caption="Números" Width="300px">
+                <CellDisplayTemplate>
+                    @{
+                        var sorteo = (Sorteo)context.DataItem;
+                    }
+                    @foreach (var n in sorteo.Numeros.OrderBy(x => x.Numero))
+                    {
+                        <span class="badge bg-primary me-1">@n.Numero</span>
+                    }
+                </CellDisplayTemplate>
+            </DxGridDataColumn>
+        </Columns>
+    </DxGrid>
+}
+
+@code {
+    private List<Sorteo>? sorteos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sorteos = await Stats.ObtenerTodosLosSorteos();
+    }
+}
