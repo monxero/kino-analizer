@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using KinoAnalyzer.Data;
 using KinoAnalyzer.Models;
 using System.Security.Claims;
+using System.Xml.Serialization;
 
 namespace KinoAnalyzer.Pages.MisCombinaciones;
 
@@ -83,4 +84,38 @@ public class MisCombinacionesModel : PageModel
 
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnGetExportarXmlAsync(int id)
+    {
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var combinacion = await _db.CombinacionesUsuario
+            .Include(c => c.Numeros)
+            .FirstOrDefaultAsync(c => c.Id == id && c.UsuarioId == usuarioId);
+
+        if (combinacion == null)
+        {
+            return NotFound();
+        }
+
+        var exportDto = new CombinacionExportDto
+        {
+            Nombre = combinacion.Nombre,
+            Notas = combinacion.Notas,
+            CreadoEn = combinacion.CreadoEn,
+            Numeros = combinacion.Numeros.Select(n => n.Numero).OrderBy(n => n).ToList()
+        };
+
+        var serializer = new XmlSerializer(typeof(CombinacionExportDto));
+        using var stream = new MemoryStream();
+        using (var writer = System.Xml.XmlWriter.Create(stream, new System.Xml.XmlWriterSettings { Indent = true }))
+        {
+            serializer.Serialize(writer, exportDto);
+        }
+
+        var nombreArchivo = $"combinacion-{combinacion.Nombre.Replace(" ", "-")}.xml";
+        return File(stream.ToArray(), "application/xml", nombreArchivo);
+    }
+    
 }
+

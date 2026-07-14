@@ -64,6 +64,9 @@
                     <input type="hidden" name="id" value="@combo.Id" />
                     <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
                 </form>
+                <a asp-page-handler="ExportarXml" asp-route-id="@combo.Id" class="btn btn-sm btn-outline-secondary mt-2 ms-1">
+                    Exportar XML
+                </a>               
             </div>
         </div>
     }
@@ -74,3 +77,4 @@ else
         No tienes combinaciones guardadas todavía.
     </div>
 }
+
